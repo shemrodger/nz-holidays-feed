@@ -1,0 +1,56 @@
+name: Update holiday feed
+
+on:
+  schedule:
+    - cron: "0 20 1 * *"   # 20:00 UTC on the 1st = the morning of the 2nd in New Zealand
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install the two holiday packages (latest within the major version)
+        run: |
+          pip install -r requirements.txt
+          npm install --no-audit --no-fund
+
+      - name: Run the tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Build and check the feed
+        run: python tools/update.py
+
+      - name: Publish
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- '*/NZ.json' README.md
+          git diff --cached --quiet || (git commit -m "Update holiday feed" && git push)
+
+      - name: Open an issue when a check fails
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          open=$(gh issue list --label feed-alert --state open --json number --jq 'length')
+          if [ "$open" = "0" ]; then
+            gh label create feed-alert --color B60205 --description "The holiday feed job needs a person" --force
+            if [ -f report.md ]; then body=$(cat report.md); else body="The job failed before the checks ran."; fi
+            body="$body"$'\n\n'"Run log: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            gh issue create --title "Holiday feed check failed" --label feed-alert --body "$body"
+          fi

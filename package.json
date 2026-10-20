@@ -1,0 +1,10 @@
+{
+  "name": "nz-holidays-feed",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NZ public holidays feed: cross-check source",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "date-holidays": "^3.37.0"
+  }
+}
