@@ -35,6 +35,13 @@ class UpdateTests(unittest.TestCase):
         self.assertEqual(result["problems"], [])
         self.assertEqual(files, ["2026/NZ.json", "2027/NZ.json", "2028/NZ.json", "2029/NZ.json"])
 
+    def test_files_use_unix_line_endings_on_every_platform(self):
+        rows = {y: [LABOUR] if y == 2028 else [] for y in range(2026, 2030)}
+        with tempfile.TemporaryDirectory() as d:
+            update.run(pathlib.Path(d), TODAY, sources(rows, rows), {})
+            for p in [*pathlib.Path(d).rglob("NZ.json"), pathlib.Path(d) / "README.md"]:
+                self.assertNotIn(b"\r", p.read_bytes(), p.name)
+
     def test_refuses_to_publish_when_sources_disagree(self):
         py = {2028: [LABOUR]}
         dh = {2028: [("2028-10-24", "National", "Labour Day")]}

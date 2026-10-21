@@ -92,11 +92,12 @@ def run(out_dir, today, sources, verified):
         for y in years:
             path = pathlib.Path(out_dir) / str(y) / "NZ.json"
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(json.dumps(feedlib.to_feed(py[y]), indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            path.write_text(json.dumps(feedlib.to_feed(py[y]), indent=2, ensure_ascii=False) + "\n",
+                            encoding="utf-8", newline="\n")  # same bytes on Windows and Linux
         published = sorted(int(p.parent.name) for p in pathlib.Path(out_dir).glob("*/NZ.json"))
         (pathlib.Path(out_dir) / "README.md").write_text(README.format(
             ahead=YEARS_AHEAD, url=OFFICIAL_URL, years=", ".join(map(str, published)), checked=today.isoformat()),
-            encoding="utf-8")
+            encoding="utf-8", newline="\n")
     return {"years": years, "problems": problems, "warnings": warnings}
 
 
