@@ -1,0 +1,12 @@
+{
+  "country": "NZ",
+  "years": [
+    2026,
+    2027,
+    2028,
+    2029
+  ],
+  "latest": 2029,
+  "updated": "2026-10-21",
+  "url": "https://shemrodger.github.io/nz-holidays-feed/{year}/NZ.json"
+}

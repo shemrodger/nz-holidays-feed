@@ -23,11 +23,13 @@ import feedlib  # noqa: E402
 
 OFFICIAL_URL = "https://employment.govt.nz/leave-and-holidays/public-holidays/public-holidays-and-anniversary-dates"
 YEARS_AHEAD = 3
+FEED_URL = "https://shemrodger.github.io/nz-holidays-feed/{year}/NZ.json"
 
 README = """# NZ public holidays feed
 
 New Zealand public holidays and regional anniversary days, one JSON file per year, at `{{year}}/NZ.json`.
 For example: `https://shemrodger.github.io/nz-holidays-feed/2027/NZ.json`.
+`years.json` lists the years in the feed and the latest one.
 
 - Dates are the observed (Mondayised) dates for a Monday to Friday worker.
 - The format matches the Nager.Date API: `date`, `localName`, `name`, `countryCode`, `global`, `counties`, `types`.
@@ -95,6 +97,10 @@ def run(out_dir, today, sources, verified):
             path.write_text(json.dumps(feedlib.to_feed(py[y]), indent=2, ensure_ascii=False) + "\n",
                             encoding="utf-8", newline="\n")  # same bytes on Windows and Linux
         published = sorted(int(p.parent.name) for p in pathlib.Path(out_dir).glob("*/NZ.json"))
+        index = {"country": "NZ", "years": published, "latest": published[-1], "updated": today.isoformat(),
+                 "url": FEED_URL}
+        (pathlib.Path(out_dir) / "years.json").write_text(json.dumps(index, indent=2) + "\n",
+                                                          encoding="utf-8", newline="\n")
         (pathlib.Path(out_dir) / "README.md").write_text(README.format(
             ahead=YEARS_AHEAD, url=OFFICIAL_URL, years=", ".join(map(str, published)), checked=today.isoformat()),
             encoding="utf-8", newline="\n")

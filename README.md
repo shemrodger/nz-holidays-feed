@@ -2,6 +2,7 @@
 
 New Zealand public holidays and regional anniversary days, one JSON file per year, at `{year}/NZ.json`.
 For example: `https://shemrodger.github.io/nz-holidays-feed/2027/NZ.json`.
+`years.json` lists the years in the feed and the latest one.
 
 - Dates are the observed (Mondayised) dates for a Monday to Friday worker.
 - The format matches the Nager.Date API: `date`, `localName`, `name`, `countryCode`, `global`, `counties`, `types`.
