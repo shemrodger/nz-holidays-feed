@@ -18,6 +18,6 @@ open-source packages (Python `holidays` and `date-holidays`), and publishes only
 
 If a check fails, nothing is published and the job opens a GitHub issue.
 
-Years in this feed: 2026, 2027, 2028, 2029. Last checked: 2026-10-21.
+Years in this feed: 2026, 2027, 2028, 2029. Last checked: 2026-11-01.
 
 No warranty. Employment NZ notes that regional dates can contain errors. Check them with the local council.
